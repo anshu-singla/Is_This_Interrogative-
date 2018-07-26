@@ -8,3 +8,4 @@ Resourses :-
 Video Tutorial :- https://www.youtube.com/watch?v=FLZvOKSCkxY&list=PLQVvvaa0QuDf2JswnfiGkliBInZnIC4HL&index=1
 
 NLTK Corpora :- https://www.nltk.org/book/ch02.html
+NLTK POS_Tagging :- https://www.nltk.org/book/ch05.html
