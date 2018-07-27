@@ -1,8 +1,10 @@
 import nltk
 from nltk.tokenize import word_tokenize
+# from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
 from nltk.corpus import gutenberg
 from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import PunktSentenceTokenizer
 
 # example_text = "Hello there Mr. Singh, how are you doing today? The weather is great and Python is pretty good itself. The sky is bluish-red and you should not eat anything not edible! But who are you? and why are you saying this is not possible."
@@ -37,7 +39,7 @@ tokenized = custom_tokenizer.tokenize(example_text)
 
 def process_content():
 	try:
-		for i in tokenized:
+		for i in tokenized[:0]:
 			words = nltk.word_tokenize(i)
 			tagged = nltk.pos_tag(words)
 			# print(tagged)
@@ -46,10 +48,26 @@ def process_content():
 
 			chunkParser = nltk.RegexpParser(chunkGram)
 			chunked = chunkParser.parse(tagged)
-			print(chunked)
+			# print(chunked)
 			# chunked.draw()
 
 	except Exception as e:
 		print(str(e))
 
 process_content()		
+
+
+print("----------------------------Lemmatizing")
+# Same as stemming but the end result is a meaningfull word
+# DOES NOT WORK ON CAPITAL LETTER BEGINING WORDS
+# Defualt paramter for lemmatizing in POStag is a noun , "n"..So if you are trying to pass anything else to lemmatize, try and use specific post tag for that.
+
+lemmatizer = WordNetLemmatizer()
+print(lemmatizer.lemmatize("cats"))
+print(lemmatizer.lemmatize("better"))
+print(lemmatizer.lemmatize("better", pos="a"))
+print(lemmatizer.lemmatize("best", pos="a"))
+print(lemmatizer.lemmatize("ride"))
+print(lemmatizer.lemmatize("rode", pos = "v"))
+print(lemmatizer.lemmatize("ridden", pos = "v"))
+
