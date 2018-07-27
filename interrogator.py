@@ -5,9 +5,9 @@ from nltk.corpus import gutenberg
 from nltk.stem import PorterStemmer
 from nltk.tokenize import PunktSentenceTokenizer
 
-example_text = "Hello there Mr. Singh, how are you doing today? The weather is great and Python is pretty good itself. The sky is bluish-red and you should not eat anything not edible!"
+# example_text = "Hello there Mr. Singh, how are you doing today? The weather is great and Python is pretty good itself. The sky is bluish-red and you should not eat anything not edible! But who are you? and why are you saying this is not possible."
 train_text = gutenberg.raw('austen-emma.txt')
-# example_text = gutenberg.raw("austen-persuasion.txt")
+example_text = gutenberg.raw("austen-persuasion.txt")
 
 
 
@@ -30,7 +30,7 @@ train_text = gutenberg.raw('austen-emma.txt')
 # print(stemmed_words)
 
 
-print("----------------------------Custom Tokenizing and Part-of-speech Tagging")
+print("----------------------------Custom Tokenizing, Part-of-speech Tagging, Chunking-----")
 custom_tokenizer = PunktSentenceTokenizer(train_text)
 
 tokenized = custom_tokenizer.tokenize(example_text)
@@ -40,7 +40,15 @@ def process_content():
 		for i in tokenized:
 			words = nltk.word_tokenize(i)
 			tagged = nltk.pos_tag(words)
-			print(tagged)
+			# print(tagged)
+
+			chunkGram = r"""Chunk: {<W.+>*} """
+
+			chunkParser = nltk.RegexpParser(chunkGram)
+			chunked = chunkParser.parse(tagged)
+			print(chunked)
+			# chunked.draw()
+
 	except Exception as e:
 		print(str(e))
 
