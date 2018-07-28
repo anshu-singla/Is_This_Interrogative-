@@ -7,13 +7,13 @@ from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import PunktSentenceTokenizer
 
-# example_text = "Hello there Mr. Singh, how are you doing today? The weather is great and Python is pretty good itself. The sky is bluish-red and you should not eat anything not edible! But who are you? and why are you saying this is not possible."
+example_text = "Is there any way to do this? Hello there Mr. Singh, how are you doing today? The weather is great and Python is pretty good itself. The sky is bluish-red and you should not eat anything not edible! But who are you? and why are you saying this is not possible."
 train_text = gutenberg.raw('austen-emma.txt')
-example_text = gutenberg.raw("austen-persuasion.txt")
+# example_text = gutenberg.raw("austen-persuasion.txt")
 
 
 
-#print(sent_tokenize(example_text))
+# print(sent_tokenize(example_text))
 # print("----------------------------Tokenizing")
 # words = word_tokenize(example_text)
 # print(words)
@@ -39,15 +39,15 @@ tokenized = custom_tokenizer.tokenize(example_text)
 
 def process_content():
 	try:
-		for i in tokenized[:0]:
+		for i in tokenized:
 			words = nltk.word_tokenize(i)
 			tagged = nltk.pos_tag(words)
-			# print(tagged)
+			print(tagged)
 
-			chunkGram = r"""Chunk: {<W.+>*} """
+			# chunkGram = r"""Chunk: {<W.+>*} """
 
-			chunkParser = nltk.RegexpParser(chunkGram)
-			chunked = chunkParser.parse(tagged)
+			# chunkParser = nltk.RegexpParser(chunkGram)
+			# chunked = chunkParser.parse(tagged)
 			# print(chunked)
 			# chunked.draw()
 
@@ -62,12 +62,12 @@ print("----------------------------Lemmatizing")
 # DOES NOT WORK ON CAPITAL LETTER BEGINING WORDS
 # Defualt paramter for lemmatizing in POStag is a noun , "n"..So if you are trying to pass anything else to lemmatize, try and use specific post tag for that.
 
-lemmatizer = WordNetLemmatizer()
-print(lemmatizer.lemmatize("cats"))
-print(lemmatizer.lemmatize("better"))
-print(lemmatizer.lemmatize("better", pos="a"))
-print(lemmatizer.lemmatize("best", pos="a"))
-print(lemmatizer.lemmatize("ride"))
-print(lemmatizer.lemmatize("rode", pos = "v"))
-print(lemmatizer.lemmatize("ridden", pos = "v"))
+# lemmatizer = WordNetLemmatizer()
+# print(lemmatizer.lemmatize("cats"))
+# print(lemmatizer.lemmatize("better"))
+# print(lemmatizer.lemmatize("better", pos="a"))
+# print(lemmatizer.lemmatize("best", pos="a"))
+# print(lemmatizer.lemmatize("ride"))
+# print(lemmatizer.lemmatize("rode", pos = "v"))
+# print(lemmatizer.lemmatize("ridden", pos = "v"))
 
