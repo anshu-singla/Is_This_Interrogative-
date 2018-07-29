@@ -1,5 +1,5 @@
 import nltk
-import Stopwords
+# import Stopwords
 from nltk.tokenize import word_tokenize
 # from nltk.tokenize import sent_tokenize
 from nltk.corpus import stopwords
@@ -37,6 +37,8 @@ print("----------------------------Custom Tokenizing, Part-of-speech Tagging, Ch
 custom_tokenizer = PunktSentenceTokenizer(train_text)
 
 tokenized = custom_tokenizer.tokenize(example_text)
+
+print(tokenized)
 
 def process_content():
 	try:
