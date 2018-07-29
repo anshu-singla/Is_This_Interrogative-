@@ -16,8 +16,17 @@ stop_words = stop_words.read()
 qc_train = qc.tuples("train.txt")
 traindocuments = [x[1] for x in qc_train]
 
-qc_test = qc.tuples("test.txt")
-testdocuments = [x[1] for x in qc_test]
+# print(traindocuments)
+
+qc_testInt = qc.tuples("test.txt")
+testdocuments = [x[1] for x in qc_testInt]
+
+testDec = open("RawTestingDataDeclarative.txt").read()
+testDec = nltk.sent_tokenize(testDec)
+testdocuments = testdocuments + testDec
+random.shuffle(testdocuments)
+
+# print(testdocuments)
 
 # print(documents)
 
@@ -29,6 +38,7 @@ def findFeaturesOneGram(documents):
 		# wordPosTagDict = {}
 		for i in range(0, len(tagged)):
 			word = tagged[i][0]
+			word = word.lower()
 			tag = tagged[i][1]
 			if tag == "WDT" or tag == "WP" or tag == "WP$" or tag == "WRB":
 				# wh_pos = tag
@@ -39,18 +49,22 @@ def findFeaturesOneGram(documents):
 				# wh_bi_gram.append(wh_word)
 			elif word == "?":
 				features[word] = True
-			else :
-				features[word] = False
+			# else :
+			# 	features[word] = False
 
 		# features.append((wordPosTagDict, categoryInterrogative))
 	return features
 
 # findFeatures(documents)
-trainfeaturesets = findFeaturesOneGram(traindocuments)
+trainfeaturesets = []
+# trainfeaturesets.append((findFeaturesOneGram(traindocuments), categoryInterrogative))
 # print(trainfeaturesets)
-testfeaturesets = findFeaturesOneGram(testdocuments)
 
-classifier = nltk.NaiveBayesClassifier.train(trainfeaturesets)
-print("Naive Bayes Classifier Algo Accuracy Percent:", (nltk.classify.accuracy(classifier, testfeaturesets))*100)
-classifier.show_most_informative_features(15)
+testfeaturesets = []
+# testfeaturesets.append((findFeaturesOneGram(testdocuments), categoryInterrogative))
+# print(testfeaturesets)
+
+# classifier = nltk.NaiveBayesClassifier.train(trainfeaturesets)
+# print("Naive Bayes Classifier Algo Accuracy Percent:", (nltk.classify.accuracy(classifier, testfeaturesets))*100)
+# classifier.show_most_informative_features(15)
 
