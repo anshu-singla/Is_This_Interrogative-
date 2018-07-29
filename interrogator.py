@@ -19,13 +19,9 @@ train_text = gutenberg.raw('austen-emma.txt')
 # words = word_tokenize(example_text)
 # print(words)
 
-
-
 # print("----------------------------Stopwords")
 # stop_words = set(stopwords.words("english"))
 # print(stop_words)
-
-
 
 # print("----------------------------Stemming")
 # ps = PorterStemmer()
