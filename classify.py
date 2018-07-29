@@ -7,6 +7,7 @@ from nltk.tokenize import sent_tokenize
 
 #List of Categories :- Int -> 1, Dec -> 0
 categoryInterrogative = "Int"
+categoryDeclarative = "Dec"
 
 # print(qc.raw("test.txt"))
 
@@ -23,8 +24,8 @@ testdocuments = [x[1] for x in qc_testInt]
 
 testDec = open("RawTestingDataDeclarative.txt").read()
 testDec = nltk.sent_tokenize(testDec)
-testdocuments = testdocuments + testDec
-random.shuffle(testdocuments)
+
+# random.shuffle(testdocuments)
 
 # print(testdocuments)
 
@@ -35,36 +36,28 @@ def findFeaturesOneGram(documents):
 	for sentence in documents:
 		words = nltk.word_tokenize(sentence)
 		tagged = nltk.pos_tag(words)
-		# wordPosTagDict = {}
-		for i in range(0, len(tagged)):
-			word = tagged[i][0]
-			word = word.lower()
-			tag = tagged[i][1]
-			if tag == "WDT" or tag == "WP" or tag == "WP$" or tag == "WRB":
-				# wh_pos = tag
-				# wh_word = word
-				features[word] = True
-				# next_word = tagged[i+1][0]
-				# next_tag = tagged[i+1][1]
-				# wh_bi_gram.append(wh_word)
-			elif word == "?":
-				features[word] = True
-			# else :
-			# 	features[word] = False
+		firstWord = tagged[0][0]
+		firstTag = tagged[0][1]
+		tag = firstTag
+		if tag == "WDT" or tag == "WP" or tag == "WP$" or tag == "WRB":
+			features[firstWord] = True
 
-		# features.append((wordPosTagDict, categoryInterrogative))
+		lastWord = tagged[-1][0]
+		if lastWord == "?":
+			features[lastWord] = True
+
 	return features
 
 # findFeatures(documents)
 trainfeaturesets = []
-# trainfeaturesets.append((findFeaturesOneGram(traindocuments), categoryInterrogative))
+trainfeaturesets.append((findFeaturesOneGram(traindocuments), categoryInterrogative))
 # print(trainfeaturesets)
 
 testfeaturesets = []
-# testfeaturesets.append((findFeaturesOneGram(testdocuments), categoryInterrogative))
-# print(testfeaturesets)
+testfeaturesets.append((findFeaturesOneGram(testdocuments), categoryInterrogative))
+testfeaturesets.append((findFeaturesOneGram(testDec), categoryDeclarative))
+print(testfeaturesets)
 
-# classifier = nltk.NaiveBayesClassifier.train(trainfeaturesets)
-# print("Naive Bayes Classifier Algo Accuracy Percent:", (nltk.classify.accuracy(classifier, testfeaturesets))*100)
-# classifier.show_most_informative_features(15)
+classifier = nltk.NaiveBayesClassifier.train(trainfeaturesets)
+print("Naive Bayes Classifier Algo Accuracy Percent:", (nltk.classify.accuracy(classifier, testfeaturesets))*100)
 
