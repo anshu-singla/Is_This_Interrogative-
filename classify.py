@@ -18,6 +18,7 @@ Sample_Questions = ["what is the weather like","where are we today","why did you
                     "when did he grab the phone","what happened at seven am","did you take my phone","do you like me","do you know what happened yesterday","did it break when it dropped","does it hurt everyday",
                     "does the car break down often","can you drive me home","where did you find me"
                     "can it fly from here to target","could you find it for me, Are you coming with me or not"]
+Sample_Answer = ["The asnwer is so simple", "This looks like an easy thing to do.", "This must be doable.", "You know you should do what he is telling you to.", "This is an orange", "That was a train.", "Where there is a will, there is a way"]               
 
 wh_words_tags = ["WDT", "WP", "WP$", "WRB"]
 
@@ -34,8 +35,10 @@ qc_testInt = qc.tuples("test.txt")
 testdocuments = [x[1] for x in qc_testInt]
 testdocuments = testdocuments + Sample_Questions
 
-testDec = open("RawTestingDataDeclarative.txt").read()
-testDec = nltk.sent_tokenize(testDec)
+trainDec = open("RawTestingDataDeclarative.txt").read()
+trainDec = nltk.sent_tokenize(trainDec)
+
+testDec = Sample_Questions
 
 # random.shuffle(testdocuments)
 
@@ -51,7 +54,7 @@ def findFeaturesOneGram(documents, isInterrogative):
 		firstWord = tagged[0][0]
 		firstTag = tagged[0][1]
 		tag = firstTag
-		if :
+		if tag == "WDT" or tag == "WP" or tag == "WP$" or tag == "WRB":
 			features[tag] = isInterrogative
 		else:
 			features[tag] = not isInterrogative	
@@ -60,19 +63,21 @@ def findFeaturesOneGram(documents, isInterrogative):
 		lastTag = tagged[-1][1]
 		if lastWord == "?":
 			features[lastWord] = isInterrogative
+		else:
+			features[lastWord] = not isInterrogative
 
 	return features
 
 # findFeatures(documents)
 trainfeaturesets = []
 trainfeaturesets.append((findFeaturesOneGram(traindocuments, True), categoryInterrogative))
-trainfeaturesets.append((findFeaturesOneGram(testDec, False), categoryDeclarative))
+trainfeaturesets.append((findFeaturesOneGram(trainDec, False), categoryDeclarative))
 # print(trainfeaturesets)
 
 testfeaturesets = []
 testfeaturesets.append((findFeaturesOneGram(testdocuments, True), categoryInterrogative))
 testfeaturesets.append((findFeaturesOneGram(testDec, False), categoryDeclarative))
-print(testfeaturesets)
+# print(testfeaturesets)
 
 classifier = nltk.NaiveBayesClassifier.train(trainfeaturesets)
 print("Naive Bayes Classifier Algo Accuracy Percent:", (nltk.classify.accuracy(classifier, testfeaturesets))*100)
