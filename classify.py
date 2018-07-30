@@ -1,5 +1,6 @@
 import nltk
 import random
+import re
 from nltk.corpus import qc
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
@@ -15,14 +16,12 @@ Sample_Questions = ["what is the weather like","where are we today","why did you
                     "when did he find you","how do you get it","who does all the shipping","where do you buy stuff","why don’t you just find it in the target","why don't you buy stuff at target","where did you say it was",
                     "when did he grab the phone","what happened at seven am","did you take my phone","do you like me","do you know what happened yesterday","did it break when it dropped","does it hurt everyday",
                     "does the car break down often","can you drive me home","where did you find me", "Are you okay with this", "Will they ever leave",
-                    "can it fly from here to target","could you find it for me, Are you coming with me or not"]
-Sample_Answer = ["The asnwer is so simple", "This looks like an easy thing to do.", "This must be doable.", "You know you should do what he is telling you to.", "This is an orange", "That was a train.", "Where there is a will, there is a way"]               
-
-wh_words_tags = ["WDT", "WP", "WP$", "WRB"]
+                    "can it fly from here to target","could you find it for me", "Are you coming with me or not", "Shall i pick you up tomorrow night?"]
+Sample_Answer = ["The answer is so simple", "This looks like an easy thing to do.", "This must be doable.", "You know you should do what he is telling you to.", "This is an orange", "That was a train.", "Where there is a will, there is a way"]               
 
 qc_train = qc.tuples("train.txt")
 traindocuments = [x[1] for x in qc_train]
-traindocuments = traindocuments[:250]
+# traindocuments = traindocuments[:500]
 
 trainDec = open("RawTestingDataDeclarative.txt").read()
 trainDec = nltk.sent_tokenize(trainDec)
@@ -41,6 +40,14 @@ testDec = Sample_Answer
 
 # print(documents)
 
+def isSubjectVerbInversionPresent(taggedList):
+	verb = [re.match("<VB.+>*", taggedList[0][1])]
+	subject = [re.match("<NN.+>*", taggedList[1][1])]
+	if verb and subject:
+		return True
+	else:
+		return False
+
 def ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, tag):
 	if firstTag == tag:
 		featureOfAParticularSentence[tag] = True
@@ -50,12 +57,16 @@ def ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, tag):
 def findFeaturesOneGram(documents, categoryDefined):
 	features = []
 	for sentence in documents:
+		# print(sentence)
 		featureOfAParticularSentence = {}
 		words = nltk.word_tokenize(sentence)
 		tagged = nltk.pos_tag(words)
+		tags = [x[1] for x in tagged]
+		# print(tags)
 		firstWord = tagged[0][0]
 		firstTag = tagged[0][1]
 
+		# First four features includes the words that are starting with WH_words 
 		# 1st Feature
 		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "WDT")
 
@@ -68,7 +79,9 @@ def findFeaturesOneGram(documents, categoryDefined):
 		# 4th Feature
 		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "WRB")
 
+		# Fifth Feature includes sentences starting with ("Will", "Would", "Can", "Could") impposing a sense of question 
 		# 5th Feature
+		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "MD")
 		lastWord = tagged[-1][0]
 		lastTag = tagged[-1][1]
 		questionSign = "?"
@@ -77,6 +90,9 @@ def findFeaturesOneGram(documents, categoryDefined):
 		else:
 			featureOfAParticularSentence[questionSign] = False
 		
+		# Feature : Is subject verb inversion present at starting two indexes
+		featureNameSVI = "SVI"
+		featureOfAParticularSentence[featureNameSVI] = isSubjectVerbInversionPresent(tagged)
 
 		myDict = (featureOfAParticularSentence, categoryDefined)
 		features.append(myDict)
