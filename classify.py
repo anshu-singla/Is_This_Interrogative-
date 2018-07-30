@@ -1,6 +1,5 @@
 import nltk
 import random
-import re
 from nltk.corpus import qc
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
@@ -104,6 +103,6 @@ random.shuffle(testfeaturesets)
 # print(testfeaturesets)
 
 classifier = nltk.NaiveBayesClassifier.train(trainfeaturesets)
-print("Naive Bayes Classifier Algo Accuracy Percent:", (nltk.classify.accuracy(classifier, testfeaturesets))*100)
+print("Naive Bayes Classifier Algo Accuracy Percent:", round((nltk.classify.accuracy(classifier, testfeaturesets))*100, 2), "%")
 
 
