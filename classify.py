@@ -19,6 +19,9 @@ Sample_Questions = ["what is the weather like","where are we today","why did you
                     "can it fly from here to target","could you find it for me", "Are you coming with me or not", "Shall i pick you up tomorrow night?"]
 Sample_Answer = ["The answer is so simple", "This looks like an easy thing to do.", "This must be doable.", "You know you should do what he is telling you to.", "This is an orange", "That was a train.", "Where there is a will, there is a way"]               
 
+WH_WORDS = ["WDT", "WP", "WP$", "WRB"]
+VERB_TAGS = ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"]
+
 qc_train = qc.tuples("train.txt")
 traindocuments = [x[1] for x in qc_train]
 # traindocuments = traindocuments[:500]
@@ -31,28 +34,25 @@ trainDec = nltk.sent_tokenize(trainDec)
 qc_testInt = qc.tuples("test.txt")
 testdocuments = [x[1] for x in qc_testInt]
 testdocuments = testdocuments + Sample_Questions
+random.shuffle(testdocuments)
 
 testDec = Sample_Answer
 
-# random.shuffle(testdocuments)
-
-# print(testdocuments)
-
-# print(documents)
-
 def isSubjectVerbInversionPresent(taggedList):
-	verb = [re.match("<VB.+>*", taggedList[0][1])]
-	subject = [re.match("<NN.+>*", taggedList[1][1])]
-	if verb and subject:
+	verb = [taggedList[0][1] in VERB_TAGS]
+	# subject = [re.search("<NN.+>*", taggedList[1][1])]
+	if verb:
 		return True
 	else:
 		return False
 
-def ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, tag):
-	if firstTag == tag:
-		featureOfAParticularSentence[tag] = True
+def ifWHTagExistsOnFirstThenVerbOnSecond(taggedList):
+	whWord = [taggedList[0][1] in WH_WORDS]
+	verb = [taggedList[1][1] in VERB_TAGS]
+	if verb and whWord:
+		return True
 	else:
-		featureOfAParticularSentence[tag] = False
+		return False
 
 def findFeaturesOneGram(documents, categoryDefined):
 	features = []
@@ -66,22 +66,18 @@ def findFeaturesOneGram(documents, categoryDefined):
 		firstWord = tagged[0][0]
 		firstTag = tagged[0][1]
 
-		# First four features includes the words that are starting with WH_words 
-		# 1st Feature
-		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "WDT")
+		# First feature includes the words that are starting with WH_words and next word is a Verb
+		featureNameWHWord = "WHV"
+		featureOfAParticularSentence[featureNameWHWord] = ifWHTagExistsOnFirstThenVerbOnSecond(tagged)
 
-		# 2nd Feature
-		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "WP")
+		# This Feature includes sentences starting with ("Will", "Would", "Can", "Could") impposing a sense of question
+		tag = "MD" 
+		if firstTag == tag:
+			featureOfAParticularSentence[tag] = True
+		else:
+			featureOfAParticularSentence[tag] = False
 
-		# 3rd Feature
-		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "WP$")
-
-		# 4th Feature
-		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "WRB")
-
-		# Fifth Feature includes sentences starting with ("Will", "Would", "Can", "Could") impposing a sense of question 
-		# 5th Feature
-		ifTagExistsOnFirst(featureOfAParticularSentence, firstTag, "MD")
+		# This feature indicates the question mark at the end of the sentence
 		lastWord = tagged[-1][0]
 		lastTag = tagged[-1][1]
 		questionSign = "?"

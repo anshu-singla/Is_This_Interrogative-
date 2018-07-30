@@ -5,6 +5,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.corpus import gutenberg
 from nltk.stem import PorterStemmer
+import re
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import PunktSentenceTokenizer
 
@@ -34,15 +35,17 @@ custom_tokenizer = PunktSentenceTokenizer(train_text)
 
 tokenized = custom_tokenizer.tokenize(example_text)
 
-print(tokenized)
+# print(tokenized)
 
 def process_content():
 	try:
 		for i in tokenized:
 			words = nltk.word_tokenize(i)
 			tagged = nltk.pos_tag(words)
-			print(tagged)
-
+			print(tagged[0][1])
+			print(nltk.help.upenn_tagset())
+			verb = [re.match("<VB.+>*", tagged[0][1])]
+			print(verb)
 			# chunkGram = r"""Chunk: {<W.+>*} """
 
 			# chunkParser = nltk.RegexpParser(chunkGram)
